@@ -6,10 +6,7 @@ A clean and minimal Android application to take notes.
 
 ## ✨ Features
 
-- ✍️ Create, edit, and delete notes
-<!--
-- 🖼️ Add images to your notes
-- 🎨 Apply basic text styling (bold, italic, underline) -->
+- ✍️ Create, edit, and delete notes <!-- - 🖼️ Add images to your notes - 🎨 Apply basic text styling (bold, italic, underline) -->
 - 🔍 Sort notes
 - 📦 Local storage using Room Database
 - 🧱 MVVM Architecture with Repository pattern
