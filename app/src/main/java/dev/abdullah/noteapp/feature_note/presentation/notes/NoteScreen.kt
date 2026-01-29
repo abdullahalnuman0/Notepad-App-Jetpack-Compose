@@ -32,6 +32,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -71,6 +72,7 @@ fun NotesScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
+                .padding(horizontal = 8.dp)
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -79,13 +81,16 @@ fun NotesScreen(
             ) {
                 Text(
                     text = "Your note",
-                    style = MaterialTheme.typography.headlineMedium
+                    style = MaterialTheme.typography.headlineMedium.copy(
+                        color = Color.White
+                    )
                 )
 
                 IconButton(onClick = { viewModel.onEvent(NotesEvent.ToggleOrderSection) }) {
                     Icon(
                         painter = painterResource(R.drawable.sort_24),
-                        contentDescription = "Sort"
+                        contentDescription = "Sort",
+                        tint = Color.White
                     )
                 }
             }
