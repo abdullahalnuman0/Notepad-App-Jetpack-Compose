@@ -1,5 +1,6 @@
 package dev.abdullah.noteapp.feature_note.data.data_source
 
+
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import dev.abdullah.noteapp.feature_note.domin.model.Note
@@ -7,7 +8,8 @@ import dev.abdullah.noteapp.feature_note.domin.model.Note
 
 @Database(
     entities = [Note::class],
-    version = 1
+    version = 1,
+    exportSchema = false
 )
 abstract class NoteDatabase : RoomDatabase() {
 

@@ -1,10 +1,12 @@
 package dev.abdullah.noteapp.di
 
 import android.app.Application
+import android.content.Context
 import androidx.room.Room
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import dev.abdullah.noteapp.feature_note.data.data_source.NoteDatabase
 import dev.abdullah.noteapp.feature_note.data.repository.NoteRepositoryImpl
@@ -14,7 +16,7 @@ import dev.abdullah.noteapp.feature_note.domin.use_case.DeleteNoteUseCase
 import dev.abdullah.noteapp.feature_note.domin.use_case.GetNoteUseCase
 import dev.abdullah.noteapp.feature_note.domin.use_case.GetNotesUseCase
 import dev.abdullah.noteapp.feature_note.domin.use_case.NoteUseCases
-import javax.inject.Singleton
+import jakarta.inject.Singleton
 
 
 @Module
@@ -23,12 +25,13 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideNoteDatabase(app: Application): NoteDatabase {
+    fun provideNoteDatabase(@ApplicationContext context: Context): NoteDatabase {
         return Room.databaseBuilder(
-            app,
-            NoteDatabase::class.java,
-            NoteDatabase.DATABASE_NAME
-        ).build()
+             context.applicationContext,
+             NoteDatabase::class.java,
+             NoteDatabase.DATABASE_NAME
+        ).fallbackToDestructiveMigration(false)
+            .build()
     }
 
     @Provides
