@@ -3,14 +3,17 @@ package dev.abdullah.noteapp.feature_note.data.repository
 import dev.abdullah.noteapp.feature_note.data.data_source.NoteDao
 import dev.abdullah.noteapp.feature_note.domin.model.Note
 import dev.abdullah.noteapp.feature_note.domin.repository.NoteRepository
+import dev.abdullah.noteapp.utils.fakeNotes
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.flow
 
 class NoteRepositoryImpl(
     private val dao: NoteDao
 ) : NoteRepository {
-    override fun getNotes(): Flow<List<Note>> {
-        return dao.getNotes()
-    }
+//    override fun observeNotes(): Flow<List<Note>> = dao.observeNotes()
+    override fun observeNotes(): Flow<List<Note>> = flow { emit(fakeNotes) }
+
 
     override suspend fun getNoteById(id: Int): Note? {
         return dao.getNoteById(id)

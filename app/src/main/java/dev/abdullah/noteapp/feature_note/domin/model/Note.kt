@@ -1,28 +1,40 @@
 package dev.abdullah.noteapp.feature_note.domin.model
 
-import android.os.Message
+import androidx.compose.ui.graphics.Color
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import dev.abdullah.noteapp.ui.theme.BabyBlue
-import dev.abdullah.noteapp.ui.theme.LightGreen
-import dev.abdullah.noteapp.ui.theme.RedOrange
-import dev.abdullah.noteapp.ui.theme.RedPink
-import dev.abdullah.noteapp.ui.theme.Violet
+import androidx.room.TypeConverters
+import java.util.Date
 
 
 @Entity
-data class Note(
+data class Note (
+    @PrimaryKey(autoGenerate = true)
+    val id: Int = 0,
+
     val title: String,
     val content: String,
-    val timestamp: Long,
-    val color: Int,
-    @PrimaryKey val id: Int? = null
-) {
+    val category: String,
 
-    companion object {
-        val noteColors = listOf(RedOrange, LightGreen, Violet, BabyBlue, RedPink)
-    }
+    val colorTag: Long = Color.White.value.toLong(),        // Room can handle Long
+    val backgroundColor: Long = Color.White.value.toLong(), // Room can handle Long
 
-}
+    val lastUpdated: Long = Date().time, // Store timestamp as Long
+    val isPinned: Boolean = false
+)
+
 
 class InvalidNoteException(message: String) : Exception(message)
+
+/**
+data class NoteNew(
+    val id: Int,
+    val title: String = "",
+    val content: String = "",
+    val category: String? = null,
+    val colorTag: Color = Color(0xFF6B8E76),
+    val backgroundColor: Color = Color.White,
+    val lastUpdated: Date = Date(),
+    val isPinned: Boolean = false,
+)
+* */

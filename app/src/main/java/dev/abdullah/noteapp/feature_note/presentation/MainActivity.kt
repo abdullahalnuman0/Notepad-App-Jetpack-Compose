@@ -13,7 +13,6 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import dagger.hilt.android.AndroidEntryPoint
 import dev.abdullah.noteapp.feature_note.domin.util.Screen
-import dev.abdullah.noteapp.feature_note.presentation.add_edit_note.AddEditNoteScreen
 import dev.abdullah.noteapp.feature_note.presentation.notes.NotesScreen
 import dev.abdullah.noteapp.ui.theme.NoteAppTheme
 
@@ -21,7 +20,7 @@ import dev.abdullah.noteapp.ui.theme.NoteAppTheme
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //enableEdgeToEdge()
+        enableEdgeToEdge()
         setContent {
             NoteAppTheme {
                 Surface(
@@ -35,7 +34,11 @@ class MainActivity : ComponentActivity() {
                     ) {
 
                         composable(Screen.NoteScreen.route) {
-                            NotesScreen(navController = navController)
+                            NotesScreen(){}
+//                            AddNoteScreen(
+//                                onBackClick = {},
+//                                onSaveNote = {}
+//                            )
                         }
 
                         //composable("${Screen.AddEditScreen.route}/{noteId}/{noteColor}") {
@@ -55,7 +58,7 @@ class MainActivity : ComponentActivity() {
 
                             val color = it.arguments?.getInt("noteColor") ?: -1
 
-                            AddEditNoteScreen(navController = navController, noteColor = color)
+//                            AddEditNoteScreen(navController = navController, noteColor = color)
                         }
 
 

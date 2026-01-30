@@ -12,7 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 
-private val DarkColorScheme = darkColorScheme(
+/*private val DarkColorScheme = darkColorScheme(
     primary = Color.White,
     background = DarkGray,
     onBackground = Color.White,
@@ -25,7 +25,7 @@ private val LightColorScheme = lightColorScheme(
     secondary = PurpleGrey40,
     tertiary = Pink40
 
-    /* Other default colors to override
+    *//* Other default colors to override
     background = Color(0xFFFFFBFE),
     surface = Color(0xFFFFFBFE),
     onPrimary = Color.White,
@@ -33,8 +33,31 @@ private val LightColorScheme = lightColorScheme(
     onTertiary = Color.White,
     onBackground = Color(0xFF1C1B1F),
     onSurface = Color(0xFF1C1B1F),
-    */
+    *//*
+)*/
+
+private val LightColorScheme = lightColorScheme(
+    primary = Color(0xFF6B8E76),
+    onPrimary = Color.White,
+    secondary = Color(0xFFE8E6DF),
+    onSecondary = Color(0xFF4A4742),
+    tertiary = Color(0xFFF2F0E9),
+    onTertiary = Color(0xFF3D3A36),
+    background = Color(0xFFF8F7F2),
+    onBackground = Color(0xFF3D3A36),
+    surface = Color.White,
+    onSurface = Color(0xFF3D3A36),
+    error = Color(0xFFD06A5F),
+    onError = Color.White,
+    outline = Color(0xFFE0DED6)
 )
+
+private val DarkColorScheme = darkColorScheme(
+    // Define dark theme colors if needed
+    primary = Color(0xFF7DA686),
+    background = Color(0xFF121210)
+)
+
 
 @Composable
 fun NoteAppTheme(
@@ -49,9 +72,8 @@ fun NoteAppTheme(
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
 
-//        darkTheme -> DarkColorScheme
-//        else -> LightColorScheme
-        else -> DarkColorScheme
+        darkTheme -> DarkColorScheme
+        else -> LightColorScheme
     }
 
     MaterialTheme(

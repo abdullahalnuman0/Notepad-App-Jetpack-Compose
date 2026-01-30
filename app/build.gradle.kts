@@ -77,5 +77,14 @@ dependencies {
     // optional - Kotlin Extensions and Coroutines support for Room
     implementation("androidx.room:room-ktx:2.8.4")
 
+    // Icons
+    implementation("androidx.compose.material:material-icons-extended:1.7.8")
+
+    // Coil for image loading
+    implementation("io.coil-kt:coil-compose:2.7.0")
+
+    // System UI Controller for status bar [এটা Jetpack Compose এ ডিভাইসের Status Bar, Navigation Bar, এবং অন্যান্য system UI elements কে কাস্টমাইজ করার জন্য ব্যবহৃত হয়।]
+//    implementation("com.google.accompanist:accompanist-systemuicontroller:0.36.0")
+
 
 }
