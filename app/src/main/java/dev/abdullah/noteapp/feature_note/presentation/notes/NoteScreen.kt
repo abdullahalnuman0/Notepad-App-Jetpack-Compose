@@ -15,7 +15,9 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
 import dev.abdullah.noteapp.feature_note.domin.model.Note
+import dev.abdullah.noteapp.feature_note.domin.util.NavAddEditNote
 import dev.abdullah.noteapp.feature_note.presentation.notes.components.NewNoteFAB
 import dev.abdullah.noteapp.feature_note.presentation.notes.components.NotesGrid
 import dev.abdullah.noteapp.feature_note.presentation.notes.components.NotesTopBar
@@ -25,6 +27,7 @@ import dev.abdullah.noteapp.utils.fakeNotes
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun NotesScreen(
+    navController: NavController,
     viewModel: NotesViewModel = hiltViewModel(),
     notes: List<Note> = fakeNotes,
     onNoteClick: (Int) -> Unit,
@@ -42,8 +45,7 @@ fun NotesScreen(
             )
         },
         floatingActionButton = {
-//            NewNoteFAB(onClick = onNewNoteClick)
-            NewNoteFAB(onClick = {})
+            NewNoteFAB(onClick = {navController.navigate(NavAddEditNote(1))})
         }
     ) { paddingValues ->
         Box(

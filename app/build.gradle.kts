@@ -7,6 +7,9 @@ plugins {
     id("com.google.dagger.hilt.android")
 //    id("androidx.room")
 
+    // Kotlin Serialization
+    id("kotlinx-serialization")
+
 }
 
 android {

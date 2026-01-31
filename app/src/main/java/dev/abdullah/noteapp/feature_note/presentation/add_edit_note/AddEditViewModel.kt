@@ -35,7 +35,7 @@ class AddEditNoteViewModel @Inject constructor(
     )
     val noteContent: State<NoteTextFieldState> = _noteContent
 
-    private val _noteColor = mutableStateOf(Note.noteColors.random().toArgb())
+    private val _noteColor = mutableStateOf(0xfffff)
     val noteColor: State<Int> = _noteColor
 
     private val _eventFlow = MutableSharedFlow<UiEvent>()
@@ -59,7 +59,7 @@ class AddEditNoteViewModel @Inject constructor(
                             isHintVisible = false
                         )
 
-                        _noteColor.value = note.color
+//                        _noteColor.value = note.color
 
                     }
                 }
@@ -99,22 +99,22 @@ class AddEditNoteViewModel @Inject constructor(
             }
 
             is AddEditNoteEvent.SaveNote -> {
-                viewModelScope.launch {
-                    try {
-                        noteUseCases.addNote(
-                            note = Note(
-                                title = noteTitle.value.text,
-                                content = noteContent.value.text,
-                                timestamp = System.currentTimeMillis(),
-                                color = noteColor.value,
-                                id = currentNoteId
-                            )
-                        )
-                        _eventFlow.emit(UiEvent.SaveNote)
-                    } catch (ex: InvalidNoteException) {
-                        _eventFlow.emit(UiEvent.ShowSnackBar(ex.message?: "Could not save note !!"))
-                    }
-                }
+//                viewModelScope.launch {
+//                    try {
+//                        noteUseCases.addNote(
+//                            note = Note(
+//                                title = noteTitle.value.text,
+//                                content = noteContent.value.text,
+//                                timestamp = System.currentTimeMillis(),
+//                                color = noteColor.value,
+//                                id = currentNoteId
+//                            )
+//                        )
+//                        _eventFlow.emit(UiEvent.SaveNote)
+//                    } catch (ex: InvalidNoteException) {
+//                        _eventFlow.emit(UiEvent.ShowSnackBar(ex.message?: "Could not save note !!"))
+//                    }
+//                }
             }
 
         }

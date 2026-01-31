@@ -108,7 +108,7 @@ fun NoteCard(
                     fontFamily = FontFamily.Serif,
                     fontWeight = FontWeight.Medium
                 ),
-                maxLines = 2,
+                maxLines = 3,
                 overflow = TextOverflow.Ellipsis,
                 color = MaterialTheme.colorScheme.onSurface
             )
@@ -121,7 +121,7 @@ fun NoteCard(
                 style = MaterialTheme.typography.bodySmall.copy(
                     fontFamily = FontFamily.Serif
                 ),
-                maxLines = 4,
+                maxLines = 5,
                 overflow = TextOverflow.Ellipsis,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )

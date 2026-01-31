@@ -7,5 +7,7 @@ plugins {
     id("com.google.dagger.hilt.android") version "2.57.2" apply false
 //    id("androidx.room") version "2.6.1" apply false
 
+    // serialization
+    kotlin("plugin.serialization") version "2.1.20"
 
 }

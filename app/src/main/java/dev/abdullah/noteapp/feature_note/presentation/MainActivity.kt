@@ -6,13 +6,14 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
+import androidx.navigation.toRoute
 import dagger.hilt.android.AndroidEntryPoint
-import dev.abdullah.noteapp.feature_note.domin.util.Screen
+import dev.abdullah.noteapp.feature_note.domin.util.NavAddEditNote
+import dev.abdullah.noteapp.feature_note.domin.util.NavNoteView
+import dev.abdullah.noteapp.feature_note.presentation.add_edit_note.AddNoteScreen
 import dev.abdullah.noteapp.feature_note.presentation.notes.NotesScreen
 import dev.abdullah.noteapp.ui.theme.NoteAppTheme
 
@@ -30,37 +31,22 @@ class MainActivity : ComponentActivity() {
 
                     NavHost(
                         navController = navController,
-                        startDestination = Screen.NoteScreen.route
+//                        startDestination = NavNoteView
+                        startDestination = NavAddEditNote(10)
                     ) {
 
-                        composable(Screen.NoteScreen.route) {
-                            NotesScreen(){}
-//                            AddNoteScreen(
-//                                onBackClick = {},
-//                                onSaveNote = {}
-//                            )
+                        composable<NavNoteView> {
+                            NotesScreen(navController) {}
                         }
 
-                        //composable("${Screen.AddEditScreen.route}/{noteId}/{noteColor}") {
-                        composable("${Screen.AddEditScreen.route}?noteId={noteId}&noteColor={noteColor}",
-                            arguments = listOf(
-                                navArgument("noteId") {
-                                    type = NavType.IntType
-                                    defaultValue = -1
+                        composable<NavAddEditNote> {
+                            val id = it.toRoute<NavAddEditNote>().id
+                            println("-------------\nNote id $id\n-------------")
+                            AddNoteScreen(
+                                navController = navController
+                            )
 
-                                },
-                                navArgument("noteColor") {
-                                    type = NavType.IntType
-                                    defaultValue = -1
-                                }
-
-                            )) {
-
-                            val color = it.arguments?.getInt("noteColor") ?: -1
-
-//                            AddEditNoteScreen(navController = navController, noteColor = color)
                         }
-
 
                     }
                 }
