@@ -2,17 +2,19 @@ package dev.abdullah.noteapp.feature_note.presentation.add_edit_note
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.graphics.toArgb
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dev.abdullah.noteapp.feature_note.domin.model.InvalidNoteException
 import dev.abdullah.noteapp.feature_note.domin.model.Note
 import dev.abdullah.noteapp.feature_note.domin.use_case.NoteUseCases
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.util.Date
 import javax.inject.Inject
 
 @HiltViewModel
@@ -21,109 +23,62 @@ class AddEditNoteViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val _noteTitle = mutableStateOf(
-        NoteTextFieldState(
-            hint = "Enter Title..."
-        )
-    )
-    val noteTitle: State<NoteTextFieldState> = _noteTitle
+    private val _uiState = MutableStateFlow(AddEditUiState())
+    val uiState = _uiState.asStateFlow()
 
-    private val _noteContent = mutableStateOf(
-        NoteTextFieldState(
-            hint = "Enter some content..."
-        )
-    )
-    val noteContent: State<NoteTextFieldState> = _noteContent
-
-    private val _noteColor = mutableStateOf(0xfffff)
-    val noteColor: State<Int> = _noteColor
-
-    private val _eventFlow = MutableSharedFlow<UiEvent>()
-    val eventFlow = _eventFlow
-
-    private var currentNoteId: Int? = null
+    private val _uiEvent = MutableSharedFlow<UiEvent>()
+    val uiEvent = _uiEvent.asSharedFlow()
 
 
-    init {
-        savedStateHandle.get<Int>("noteId")?.let { noteId ->
-            if (noteId != -1){
-                viewModelScope.launch {
-                    noteUseCases.getNote(noteId)?.also { note ->
-                        currentNoteId = note.id
-                        _noteTitle.value = noteTitle.value.copy(
-                            text = note.title,
-                            isHintVisible = false
-                        )
-                        _noteContent.value = noteContent.value.copy(
-                            text = note.content,
-                            isHintVisible = false
-                        )
-
-//                        _noteColor.value = note.color
-
-                    }
+    fun onEvent(event: AddEditEvent) {
+        when (event) {
+            is AddEditEvent.EnteredCategory ->
+                _uiState.update {
+                    it.copy(
+                        category = event.value,
+                        showCategoryDialog = false,
+                        lastUpdateDate = Date()
+                    )
                 }
-            }
+
+            is AddEditEvent.EnteredContent ->
+                _uiState.update {
+                    it.copy(content = event.value, lastUpdateDate = Date())
+                }
+
+            is AddEditEvent.EnteredTitle ->
+                _uiState.update {
+                    it.copy(title = event.value, lastUpdateDate = Date())
+                }
+
+            AddEditEvent.SaveNote -> saveNote()
+
+            AddEditEvent.ToggleCategoryDialog ->
+                _uiState.update {
+                    it.copy(showCategoryDialog = !it.showCategoryDialog)
+                }
         }
     }
 
 
-    fun onEvent(event: AddEditNoteEvent) {
-        when (event) {
-            is AddEditNoteEvent.EnteredTitle -> {
-                _noteTitle.value = noteTitle.value.copy(
-                    text = event.value
-                )
-            }
-
-            is AddEditNoteEvent.ChangedTitleFocus -> {
-                _noteTitle.value = noteTitle.value.copy(
-                    isHintVisible = !event.focusState.isFocused && noteTitle.value.text.isBlank()
-                )
-            }
-
-            is AddEditNoteEvent.EnteredContent -> {
-                _noteContent.value = noteContent.value.copy(
-                    text = event.value
-                )
-            }
-
-            is AddEditNoteEvent.ChangedContentFocus -> {
-                _noteContent.value = noteContent.value.copy(
-                    isHintVisible = !event.focusState.isFocused && noteContent.value.text.isBlank()
-                )
-            }
-
-            is AddEditNoteEvent.ChangeColor -> {
-                _noteColor.value = event.color
-            }
-
-            is AddEditNoteEvent.SaveNote -> {
-//                viewModelScope.launch {
-//                    try {
-//                        noteUseCases.addNote(
-//                            note = Note(
-//                                title = noteTitle.value.text,
-//                                content = noteContent.value.text,
-//                                timestamp = System.currentTimeMillis(),
-//                                color = noteColor.value,
-//                                id = currentNoteId
-//                            )
-//                        )
-//                        _eventFlow.emit(UiEvent.SaveNote)
-//                    } catch (ex: InvalidNoteException) {
-//                        _eventFlow.emit(UiEvent.ShowSnackBar(ex.message?: "Could not save note !!"))
-//                    }
-//                }
-            }
-
+    private fun saveNote() {
+        viewModelScope.launch {
+            val s = _uiState.value
+            val note = Note(
+                title = s.title,
+                content = s.content,
+                category = s.category ?: "Other",
+                lastUpdated = s.lastUpdateDate.time
+            )
+            val addNote = noteUseCases.addNote(note)
+            println(addNote)
         }
     }
 
 
     sealed class UiEvent {
         data class ShowSnackBar(val message: String) : UiEvent()
-        data object SaveNote : UiEvent()
+        data object Back : UiEvent()
     }
 
 }

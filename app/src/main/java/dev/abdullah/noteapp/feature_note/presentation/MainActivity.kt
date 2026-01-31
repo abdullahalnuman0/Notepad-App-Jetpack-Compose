@@ -31,8 +31,8 @@ class MainActivity : ComponentActivity() {
 
                     NavHost(
                         navController = navController,
-//                        startDestination = NavNoteView
-                        startDestination = NavAddEditNote(10)
+                        startDestination = NavNoteView
+//                        startDestination = NavAddEditNote(10)
                     ) {
 
                         composable<NavNoteView> {

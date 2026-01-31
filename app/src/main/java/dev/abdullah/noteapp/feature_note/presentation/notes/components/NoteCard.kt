@@ -33,9 +33,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import dev.abdullah.noteapp.feature_note.domin.model.Note
-import dev.abdullah.noteapp.utils.formatTimeAgo
-import dev.abdullah.noteapp.utils.getCategoryBackgroundColor
-import dev.abdullah.noteapp.utils.getCategoryTextColor
+import dev.abdullah.noteapp.feature_note.domin.util.formatTimeAgo
+import dev.abdullah.noteapp.feature_note.domin.util.getCategoryBackgroundColor
+import dev.abdullah.noteapp.feature_note.domin.util.getCategoryTextColor
 
 @Composable
 fun NoteCard(

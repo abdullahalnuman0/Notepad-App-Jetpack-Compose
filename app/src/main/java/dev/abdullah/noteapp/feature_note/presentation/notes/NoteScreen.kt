@@ -21,7 +21,7 @@ import dev.abdullah.noteapp.feature_note.domin.util.NavAddEditNote
 import dev.abdullah.noteapp.feature_note.presentation.notes.components.NewNoteFAB
 import dev.abdullah.noteapp.feature_note.presentation.notes.components.NotesGrid
 import dev.abdullah.noteapp.feature_note.presentation.notes.components.NotesTopBar
-import dev.abdullah.noteapp.utils.fakeNotes
+import dev.abdullah.noteapp.feature_note.domin.util.fakeNotes
 
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)

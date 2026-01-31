@@ -1,9 +1,8 @@
-package dev.abdullah.noteapp.utils
+package dev.abdullah.noteapp.feature_note.domin.util
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
 import dev.abdullah.noteapp.feature_note.domin.model.Note
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -98,12 +97,18 @@ fun daysAgo(days: Int): Long {
     }.time.time
 }
 
+/**
+ * String word count
+ */
+fun String.wordCount(): Int =
+    this.trim().split("\\s+".toRegex()).count { it.isNotEmpty() }
+
 val fakeNotes = listOf(
 
     // ---------- SHORT (20–50 words) ----------
     Note(
         id = 1,
-        title = "Morning Thoughts",
+        title = "Morning Thoughts Woke up early today and felt more focused than usual.",
         category = "Personal",
         lastUpdated = daysAgo(0),
         content = "Woke up early today and felt more focused than usual.",
