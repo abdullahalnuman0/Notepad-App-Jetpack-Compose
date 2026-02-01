@@ -7,5 +7,6 @@ sealed class NotesEvent {
     data class Sort(val option: SortOption) : NotesEvent()
     data class DeleteNote(val note: Note) : NotesEvent()
     data class PinOrUnpin(val note: Note?=null) : NotesEvent()
+    data class ShareNote(val note: Note) : NotesEvent()
     data object RestoreNote : NotesEvent()
 }

@@ -1,8 +1,12 @@
 package dev.abdullah.noteapp.feature_note.domin.util
 
+import android.content.Context
+import android.content.Intent
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
+import dev.abdullah.noteapp.R
 import dev.abdullah.noteapp.feature_note.domin.model.Note
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -102,6 +106,33 @@ fun daysAgo(days: Int): Long {
  */
 fun String.wordCount(): Int =
     this.trim().split("\\s+".toRegex()).count { it.isNotEmpty() }
+
+/**
+ * Share app note to another
+ */
+fun shareText(
+    context: Context,
+    text: String,
+    subject: String = "Share via ${context.getString(R.string.app_name)}"
+) {
+    val intent = Intent(Intent.ACTION_SEND).apply {
+        type = "text/plain"
+        putExtra(Intent.EXTRA_TEXT, text)
+        putExtra(Intent.EXTRA_SUBJECT, subject)
+    }
+    context.startActivity(
+        Intent.createChooser(intent, subject)
+    )
+}
+
+/**
+ * Format time That format `MMM dd, yyyy · hh:mm a`
+ */
+fun Long.formatDate(): String {
+    val sdf = SimpleDateFormat("MMM dd, yyyy · hh:mm a", Locale.getDefault())
+    return sdf.format(Date(this))
+}
+
 
 val fakeNotes = listOf(
 

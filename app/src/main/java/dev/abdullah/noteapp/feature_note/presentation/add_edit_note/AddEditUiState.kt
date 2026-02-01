@@ -9,5 +9,6 @@ data class AddEditUiState(
     val showCategoryDialog: Boolean=false,
     val title: String = "",
     val content: String = "",
-    val lastUpdateDate: Date = Date()
-)
+    val lastUpdateTime: Long = System.currentTimeMillis(),
+
+    )

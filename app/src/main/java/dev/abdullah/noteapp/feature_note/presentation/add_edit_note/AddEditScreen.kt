@@ -2,6 +2,9 @@ package dev.abdullah.noteapp.feature_note.presentation.add_edit_note
 
 // AddNoteScreen.kt
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,10 +27,13 @@ import androidx.compose.ui.draw.BlurredEdgeTreatment
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import dev.abdullah.noteapp.feature_note.domin.util.formatDate
+import dev.abdullah.noteapp.feature_note.domin.util.shareText
 import dev.abdullah.noteapp.feature_note.domin.util.wordCount
 import dev.abdullah.noteapp.feature_note.presentation.add_edit_note.components.AddEditTopBar
 import dev.abdullah.noteapp.feature_note.presentation.add_edit_note.components.BottomToolbar
@@ -51,28 +57,24 @@ val noteColors = listOf(
     Color(0xFFD06A5F)     // chart-5
 )
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalSharedTransitionApi::class)
 @Composable
-fun AddNoteScreen(
+fun SharedTransitionScope.AddNoteScreen(
     navController: NavController,
+    animatedVisibilityScope: AnimatedVisibilityScope,
     id: Int?,
     vm: AddEditNoteViewModel = hiltViewModel()
 ) {
+
+    val uiState by vm.uiState.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+
 
     var isNoteGetUsingThatId by remember { mutableStateOf(id == null) }
     LaunchedEffect(isNoteGetUsingThatId) {
         if (id != null && !isNoteGetUsingThatId) vm.onEvent(AddEditEvent.GetOldNote(id))
     }
 
-
-    val uiState by vm.uiState.collectAsStateWithLifecycle()
-
-
-    // Update last edited time
-    val lastEditedFormatted = remember(uiState.content) {
-        val sdf = SimpleDateFormat("MMM dd, yyyy · hh:mm a", Locale.getDefault())
-        sdf.format(Date())
-    }
 
     LaunchedEffect(Unit) {
         vm.uiEvent.collectLatest { event ->
@@ -87,7 +89,11 @@ fun AddNoteScreen(
         topBar = {
             AddEditTopBar(
                 onBackClick = { vm.onEvent(AddEditEvent.SaveNote) },
-                onShare = { },
+                onShare = {
+                    val sharedText = "`${uiState.category ?: "Other"}`\n" +
+                            if (uiState.title.isNotBlank()) "*${uiState.title}*\n_${uiState.content.trim()}_" else "_${uiState.content.trim()}_";
+                    shareText(context, sharedText)
+                },
                 onSave = { vm.onEvent(AddEditEvent.SaveNote) }
             )
         },
@@ -128,6 +134,8 @@ fun AddNoteScreen(
                 // Category Selector
                 CategorySelector(
                     category = uiState.category,
+                    id = id ?: -1,
+                    animatedVisibilityScope = animatedVisibilityScope,
                     onClick = { vm.onEvent(AddEditEvent.ToggleCategoryDialog) }
                 )
 
@@ -136,6 +144,8 @@ fun AddNoteScreen(
                 // Title Input
                 NoteTitleInput(
                     title = uiState.title,
+                    id = id ?: -1,
+                    animatedVisibilityScope = animatedVisibilityScope,
                     onValueChange = { vm.onEvent(AddEditEvent.EnteredTitle(it)) }
                 )
 
@@ -145,12 +155,14 @@ fun AddNoteScreen(
                 LinedNoteInput(
                     modifier = Modifier.weight(1f),
                     noteContent = uiState.content,
+                    id = id ?: -1,
+                    animatedVisibilityScope = animatedVisibilityScope,
                     onValueChange = { vm.onEvent(AddEditEvent.EnteredContent(it)) }
                 )
 
                 // Footer with stats
                 FooterStats(
-                    lastEdited = lastEditedFormatted,
+                    lastEdited = uiState.lastUpdateTime.formatDate(),
                     wordCount = uiState.content.wordCount(),
                     modifier = Modifier.padding(vertical = 16.dp)
                 )

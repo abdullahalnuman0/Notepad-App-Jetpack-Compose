@@ -8,6 +8,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.abdullah.noteapp.feature_note.domin.model.Note
 import dev.abdullah.noteapp.feature_note.domin.use_case.NoteUseCases
 import dev.abdullah.noteapp.feature_note.presentation.components.AppSnackbarVisuals
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -111,49 +112,81 @@ class NotesViewModel @Inject constructor(
 
             is NotesEvent.Sort -> selectedSort.update { event.option }
 
-            is NotesEvent.DeleteNote -> {
-                viewModelScope.launch {
-                    noteUseCases.deleteNote(event.note)
-                    lastDeleteNote = event.note
-                }
-            }
+            is NotesEvent.DeleteNote -> deleteNote(event.note)
 
             is NotesEvent.RestoreNote -> {
                 viewModelScope.launch {
-                    noteUseCases.addNote(lastDeleteNote ?: return@launch)
-                    lastDeleteNote = null
-                }
-            }
-
-            is NotesEvent.PinOrUnpin -> {
-                viewModelScope.launch {
-
-                    val note = (event.note ?: lastDeleteNote) ?: return@launch
-
-                    val isPinned = note.isPinned
-                    lastPinOrUnpinNote = note.copy(isPinned = !isPinned)
-
-                    val visuals = try {
-
-                        noteUseCases.addNote(lastPinOrUnpinNote ?: return@launch)
-                        AppSnackbarVisuals(
-                            message = if (isPinned) "Unpinned" else "Pinned",
-                            actionLabel = if (isPinned) "Pin" else "Unpin",
-                            type = AppSnackbarVisuals.Type.SUCCESS
-                        )
-
+                    try {
+                        noteUseCases.addNote(lastDeleteNote ?: return@launch)
+                        lastDeleteNote = null
                     } catch (_: Exception) {
-
-                        AppSnackbarVisuals(
-                            message = "Something want wrong!",
-                            withDismissAction = true,
-                            type = AppSnackbarVisuals.Type.ERROR
-                        )
-
                     }
-                    _uiEvent.emit(UiEvent.ShowSnackBar(visuals))
                 }
             }
+
+            is NotesEvent.PinOrUnpin -> pinOrUnpin(event.note ?: lastPinOrUnpinNote ?: return)
+
+            is NotesEvent.ShareNote -> viewModelScope.launch {
+                _uiEvent.emit(UiEvent.ShareNote(event.note))
+            }
+        }
+
+    }
+
+    private fun deleteNote(note: Note) {
+
+        viewModelScope.launch {
+
+            val visuals = try {
+
+                noteUseCases.deleteNote(note)
+                lastDeleteNote = note
+
+                AppSnackbarVisuals(
+                    message = "Delete note",
+                    actionLabel = "Undo",
+                    type = AppSnackbarVisuals.Type.SUCCESS
+                )
+
+            } catch (_: Exception) {
+
+                AppSnackbarVisuals(
+                    message = "Something want wrong!",
+                    withDismissAction = true,
+                    type = AppSnackbarVisuals.Type.ERROR
+                )
+
+            }
+            _uiEvent.emit(UiEvent.ShowSnackBar(visuals))
+        }
+    }
+
+    private fun pinOrUnpin(note: Note) {
+
+        viewModelScope.launch {
+
+            val isPinned = note.isPinned
+            lastPinOrUnpinNote = note.copy(isPinned = !isPinned)
+
+            val visuals = try {
+
+                noteUseCases.addNote(lastPinOrUnpinNote ?: return@launch)
+                AppSnackbarVisuals(
+                    message = if (isPinned) "Unpinned" else "Pinned",
+                    actionLabel = if (isPinned) "Pin" else "Unpin",
+                    type = AppSnackbarVisuals.Type.SUCCESS
+                )
+
+            } catch (_: Exception) {
+
+                AppSnackbarVisuals(
+                    message = "Something want wrong!",
+                    withDismissAction = true,
+                    type = AppSnackbarVisuals.Type.ERROR
+                )
+
+            }
+            _uiEvent.emit(UiEvent.ShowSnackBar(visuals))
         }
 
     }
@@ -161,5 +194,6 @@ class NotesViewModel @Inject constructor(
 
     sealed class UiEvent {
         data class ShowSnackBar(val visuals: SnackbarVisuals) : UiEvent()
+        data class ShareNote(val note: Note) : UiEvent()
     }
 }

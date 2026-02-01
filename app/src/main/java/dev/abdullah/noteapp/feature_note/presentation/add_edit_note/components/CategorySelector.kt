@@ -1,5 +1,8 @@
 package dev.abdullah.noteapp.feature_note.presentation.add_edit_note.components
 
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -24,9 +27,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-fun CategorySelector(
+fun SharedTransitionScope.CategorySelector(
     category: String?,
+    id: Int,
+    animatedVisibilityScope: AnimatedVisibilityScope,
     onClick: () -> Unit
 ) {
     Card(
@@ -64,7 +70,12 @@ fun CategorySelector(
                 fontSize = 10.sp,
                 fontWeight = FontWeight.Bold,
                 letterSpacing = 1.sp,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.sharedElement(
+//                sharedContentState = rememberSharedContentState("tag/${laundry.id}"),
+                    sharedContentState = rememberSharedContentState("tag/$id"),
+                    animatedVisibilityScope = animatedVisibilityScope
+                )
             )
         }
     }

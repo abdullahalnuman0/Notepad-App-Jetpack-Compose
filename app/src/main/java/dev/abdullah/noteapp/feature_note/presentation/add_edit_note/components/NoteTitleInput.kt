@@ -1,5 +1,8 @@
 package dev.abdullah.noteapp.feature_note.presentation.add_edit_note.components
 
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.BasicTextField
@@ -13,10 +16,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-fun NoteTitleInput(
+fun SharedTransitionScope.NoteTitleInput(
     modifier: Modifier = Modifier,
     title: String,
+    id: Int,
+    animatedVisibilityScope: AnimatedVisibilityScope,
     onValueChange: (String) -> Unit
 ) {
     BasicTextField(
@@ -30,7 +36,11 @@ fun NoteTitleInput(
         ),
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 4.dp),
+            .padding(vertical = 4.dp)
+            .sharedElement(
+                sharedContentState = rememberSharedContentState("title/$id"),
+                animatedVisibilityScope = animatedVisibilityScope
+            ),
         decorationBox = { innerTextField ->
             if (title.isEmpty()) {
                 Text(

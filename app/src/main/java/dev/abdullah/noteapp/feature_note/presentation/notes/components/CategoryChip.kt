@@ -1,5 +1,8 @@
 package dev.abdullah.noteapp.feature_note.presentation.notes.components
 
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -13,8 +16,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-fun CategoryChip(category: String, color: Color) {
+fun SharedTransitionScope.CategoryChip(
+    category: String,
+    color: Color,
+    id: Int,
+    animatedVisibilityScope: AnimatedVisibilityScope
+) {
     Surface(
         modifier = Modifier
             .clip(RoundedCornerShape(8.dp))
@@ -23,7 +32,13 @@ fun CategoryChip(category: String, color: Color) {
     ) {
         Text(
             text = category.uppercase(),
-            modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
+            modifier = Modifier
+                .padding(horizontal = 10.dp, vertical = 4.dp)
+                .sharedElement(
+//                sharedContentState = rememberSharedContentState("tag/${laundry.id}"),
+                    sharedContentState = rememberSharedContentState("tag/$id"),
+                    animatedVisibilityScope = animatedVisibilityScope
+                ),
             fontSize = 10.sp,
             fontWeight = FontWeight.Medium,
             letterSpacing = 0.5.sp,

@@ -1,7 +1,5 @@
 package dev.abdullah.noteapp.feature_note.presentation.add_edit_note
 
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -32,31 +30,27 @@ class AddEditNoteViewModel @Inject constructor(
 
     fun onEvent(event: AddEditEvent) {
         when (event) {
-            is AddEditEvent.EnteredCategory ->
-                _uiState.update {
-                    it.copy(
-                        category = event.value,
-                        showCategoryDialog = false,
-                        lastUpdateDate = Date()
-                    )
-                }
+            is AddEditEvent.EnteredCategory -> updateState {
+                copy(
+                    category = event.value,
+                    showCategoryDialog = false,
+                    lastUpdateTime = touchNote()
+                )
+            }
 
-            is AddEditEvent.EnteredContent ->
-                _uiState.update {
-                    it.copy(content = event.value, lastUpdateDate = Date())
-                }
+            is AddEditEvent.EnteredContent -> updateState {
+                copy(content = event.value, lastUpdateTime = touchNote())
+            }
 
-            is AddEditEvent.EnteredTitle ->
-                _uiState.update {
-                    it.copy(title = event.value, lastUpdateDate = Date())
-                }
+            is AddEditEvent.EnteredTitle -> updateState {
+                copy(title = event.value, lastUpdateTime = touchNote())
+            }
 
             AddEditEvent.SaveNote -> saveNote()
 
-            AddEditEvent.ToggleCategoryDialog ->
-                _uiState.update {
-                    it.copy(showCategoryDialog = !it.showCategoryDialog)
-                }
+            AddEditEvent.ToggleCategoryDialog -> updateState {
+                copy(showCategoryDialog = !this.showCategoryDialog)
+            }
 
             is AddEditEvent.GetOldNote -> getOldNote(event.id)
         }
@@ -64,20 +58,19 @@ class AddEditNoteViewModel @Inject constructor(
 
     private fun getOldNote(id: Int) {
         viewModelScope.launch {
-            println("Call db - $id")
+
             noteUseCases.getNote(id)?.let { note ->
-                println("Found data")
-                _uiState.update {
-                    it.copy(
+
+                updateState {
+                    copy(
                         oldNote = note,
                         category = note.category,
                         title = note.title,
-                        content = note.category,
-                        lastUpdateDate = Date(note.lastUpdated)
+                        content = note.content,
+                        lastUpdateTime = note.lastUpdated
                     )
                 }
             }
-            println("Done db")
         }
     }
 
@@ -87,7 +80,7 @@ class AddEditNoteViewModel @Inject constructor(
         viewModelScope.launch {
 
             val s = _uiState.value
-            if (s.title.isEmpty() && s.content.isEmpty() && s.category == null) {
+            if ((s.title.isEmpty() && s.content.isEmpty() && s.category == null) || (s.oldNote!=null && s.lastUpdateTime == s.oldNote.lastUpdated)) {
                 _uiEvent.emit(UiEvent.Back)
                 return@launch
             }
@@ -96,18 +89,28 @@ class AddEditNoteViewModel @Inject constructor(
                 title = s.title,
                 content = s.content,
                 category = s.category ?: "Other",
-                lastUpdated = s.lastUpdateDate.time
+                lastUpdated = s.lastUpdateTime
             ) ?: Note(
                 title = s.title,
                 content = s.content,
                 category = s.category ?: "Other",
-                lastUpdated = s.lastUpdateDate.time
+                lastUpdated = s.lastUpdateTime
             )
 
             _uiEvent.emit(UiEvent.Back)
             noteUseCases.addNote(note)
         }
     }
+
+    private inline fun updateState(
+        crossinline reducer: AddEditUiState.() -> AddEditUiState
+    ) {
+        _uiState.update { current ->
+            current.reducer()
+        }
+    }
+
+    private fun touchNote() = System.currentTimeMillis()
 
 
     sealed class UiEvent {

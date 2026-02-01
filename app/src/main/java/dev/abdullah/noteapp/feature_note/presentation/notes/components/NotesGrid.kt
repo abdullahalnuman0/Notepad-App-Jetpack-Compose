@@ -1,5 +1,8 @@
 package dev.abdullah.noteapp.feature_note.presentation.notes.components
 
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -15,9 +18,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import dev.abdullah.noteapp.feature_note.domin.model.Note
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-fun NotesGrid(
+fun SharedTransitionScope.NotesGrid(
     notes: List<Note>,
+    animatedVisibilityScope: AnimatedVisibilityScope,
     onNoteClick: (Int) -> Unit,
     onEdit: (Int) -> Unit,
     onShare: (Note) -> Unit,
@@ -36,6 +41,7 @@ fun NotesGrid(
         items(notes) { note ->
             NoteCard(
                 note = note,
+                animatedVisibilityScope=animatedVisibilityScope,
                 onClick = { onNoteClick(note.id) },
                 modifier = Modifier
                     .fillMaxWidth()

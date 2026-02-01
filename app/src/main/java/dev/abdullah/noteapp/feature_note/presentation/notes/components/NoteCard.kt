@@ -1,5 +1,8 @@
 package dev.abdullah.noteapp.feature_note.presentation.notes.components
 
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -40,9 +43,11 @@ import dev.abdullah.noteapp.feature_note.domin.util.formatTimeAgo
 import dev.abdullah.noteapp.feature_note.domin.util.getCategoryBackgroundColor
 import dev.abdullah.noteapp.feature_note.domin.util.getCategoryTextColor
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-fun NoteCard(
+fun SharedTransitionScope.NoteCard(
     note: Note,
+    animatedVisibilityScope: AnimatedVisibilityScope,
     onClick: () -> Unit,
     onEdit: () -> Unit,
     onShare: () -> Unit,
@@ -80,7 +85,12 @@ fun NoteCard(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 note.category.let { category ->
-                    CategoryChip(category = category, color = category.getCategoryTextColor())
+                    CategoryChip(
+                        category = category,
+                        color = category.getCategoryTextColor(),
+                        id = note.id,
+                        animatedVisibilityScope = animatedVisibilityScope
+                    )
                 }
 
                 // 📌 PIN ICON
@@ -136,7 +146,11 @@ fun NoteCard(
                 ),
                 maxLines = 5,
                 overflow = TextOverflow.Ellipsis,
-                color = MaterialTheme.colorScheme.onSurface
+                color = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.sharedElement(
+                    sharedContentState = rememberSharedContentState("title/${note.id}"),
+                    animatedVisibilityScope = animatedVisibilityScope
+                )
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -149,7 +163,11 @@ fun NoteCard(
                 ),
                 maxLines = 5,
                 overflow = TextOverflow.Ellipsis,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.sharedElement(
+                    sharedContentState = rememberSharedContentState("content/${note.id}"),
+                    animatedVisibilityScope = animatedVisibilityScope
+                )
             )
 
             Spacer(modifier = Modifier.height(12.dp))

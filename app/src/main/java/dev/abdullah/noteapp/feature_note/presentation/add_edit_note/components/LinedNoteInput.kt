@@ -1,5 +1,8 @@
 package dev.abdullah.noteapp.feature_note.presentation.add_edit_note.components
 
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,10 +22,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-fun LinedNoteInput(
+fun SharedTransitionScope.LinedNoteInput(
     modifier: Modifier = Modifier,
     noteContent: String,
+    id: Int,
+    animatedVisibilityScope: AnimatedVisibilityScope,
     onValueChange: (String) -> Unit
 ) {
     // 1. Define shared measurements to ensure text and lines align
@@ -80,6 +86,10 @@ fun LinedNoteInput(
                 .padding(
                     top = verticalPadding,
                     start = 12.dp
+                )
+                .sharedElement(
+                    sharedContentState = rememberSharedContentState("content/$id"),
+                    animatedVisibilityScope = animatedVisibilityScope
                 ), // Start padding pushes text past margin line
             decorationBox = { innerTextField ->
                 if (noteContent.isEmpty()) {
