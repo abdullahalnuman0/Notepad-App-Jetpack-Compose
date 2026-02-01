@@ -2,4 +2,10 @@
 <resources>
 
     <style name="Theme.NoteApp" parent="android:Theme.Material.Light.NoActionBar" />
+
+    <style name="Theme.NoteApp.Splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenAnimatedIcon">@drawable/nf_logo_adaptive</item>
+        <item name="postSplashScreenTheme">@style/Theme.NoteApp</item>
+    </style>
+
 </resources>

@@ -47,12 +47,13 @@ import dev.abdullah.noteapp.feature_note.presentation.add_edit_note.noteColors
 @Composable
 fun BottomToolbar(
     noteState: Note = Note(title = "", content = "", category = ""),
-    onFormatBold: () -> Unit = {},
-    onFormatItalic: () -> Unit = {},
-    onFormatBulleted: () -> Unit = {},
-    onColorSelect: (Color) -> Unit = {},
-    onAddImage: () -> Unit = {},
-    onAddLink: () -> Unit = {},
+    onAllButtonCLick: () -> Unit,
+    onFormatBold: () -> Unit = onAllButtonCLick,
+    onFormatItalic: () -> Unit = onAllButtonCLick,
+    onFormatBulleted: () -> Unit = onAllButtonCLick,
+    onColorSelect: (Color) -> Unit = { onAllButtonCLick() },
+    onAddImage: () -> Unit = onAllButtonCLick,
+    onAddLink: () -> Unit = onAllButtonCLick,
 ) {
     Surface(
         modifier = Modifier

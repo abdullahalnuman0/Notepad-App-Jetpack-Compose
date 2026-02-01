@@ -28,13 +28,15 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import dev.abdullah.noteapp.feature_note.domin.util.NavAddEditNote
 import dev.abdullah.noteapp.feature_note.domin.util.shareText
+import dev.abdullah.noteapp.feature_note.presentation.notes.components.EmptyNotes
 import dev.abdullah.noteapp.feature_note.presentation.notes.components.NewNoteFAB
 import dev.abdullah.noteapp.feature_note.presentation.notes.components.NotesGrid
 import dev.abdullah.noteapp.feature_note.presentation.notes.components.NotesTopBar
 import kotlinx.coroutines.flow.collectLatest
 
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class,
+@OptIn(
+    ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class,
     ExperimentalSharedTransitionApi::class
 )
 @Composable
@@ -116,18 +118,21 @@ fun SharedTransitionScope.NotesScreen(
             )
 
             // Notes Grid
-            NotesGrid(
-                notes = uiState.notes,
-                onNoteClick = { navController.navigate(NavAddEditNote(it)) },
-                animatedVisibilityScope=animatedVisibilityScope,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
-                onEdit = { navController.navigate(NavAddEditNote(it)) },
-                onShare = { vm.onEvent(NotesEvent.ShareNote(it)) },
-                onPinOrUnpin = { vm.onEvent(NotesEvent.PinOrUnpin(it)) },
-                onDelete = { vm.onEvent(NotesEvent.DeleteNote(it)) }
-            )
+            if (uiState.notes.isEmpty())
+                EmptyNotes()
+            else
+                NotesGrid(
+                    notes = uiState.notes,
+                    onNoteClick = { navController.navigate(NavAddEditNote(it)) },
+                    animatedVisibilityScope = animatedVisibilityScope,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = 16.dp, vertical = 8.dp),
+                    onEdit = { navController.navigate(NavAddEditNote(it)) },
+                    onShare = { vm.onEvent(NotesEvent.ShareNote(it)) },
+                    onPinOrUnpin = { vm.onEvent(NotesEvent.PinOrUnpin(it)) },
+                    onDelete = { vm.onEvent(NotesEvent.DeleteNote(it)) }
+                )
         }
     }
 

@@ -1,7 +1,11 @@
 package dev.abdullah.noteapp.feature_note.presentation
 
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.view.View
+import android.view.animation.AccelerateDecelerateInterpolator
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -16,6 +20,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.core.animation.doOnEnd
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -30,8 +36,51 @@ import dev.abdullah.noteapp.ui.theme.NoteAppTheme
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+
+        //Splash screen install
+        val splashScreen = installSplashScreen()
+
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        // Splash screen control
+        splashScreen.setOnExitAnimationListener { screen ->
+
+            val scaleX = ObjectAnimator.ofFloat(
+                screen.iconView,
+                View.SCALE_X,
+                1f,
+                0f
+            )
+
+            val scaleY = ObjectAnimator.ofFloat(
+                screen.iconView,
+                View.SCALE_Y,
+                1f,
+                0f
+            )
+
+            val alpha = ObjectAnimator.ofFloat(
+                screen.iconView,
+                View.ALPHA,
+                1f,
+                0f
+            )
+
+
+            AnimatorSet().apply {
+                duration = 400
+                interpolator = AccelerateDecelerateInterpolator()
+                playTogether(scaleX, scaleY, alpha)
+
+                doOnEnd {
+                    screen.remove()
+                }
+                start()
+            }
+        }
+
+
         setContent {
             NoteAppTheme {
                 Surface(

@@ -58,6 +58,7 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+//    implementation(libs.androidx.compose.animation)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -89,5 +90,8 @@ dependencies {
     // System UI Controller for status bar [এটা Jetpack Compose এ ডিভাইসের Status Bar, Navigation Bar, এবং অন্যান্য system UI elements কে কাস্টমাইজ করার জন্য ব্যবহৃত হয়।]
 //    implementation("com.google.accompanist:accompanist-systemuicontroller:0.36.0")
 
+
+    // Splash screen
+    implementation(libs.androidx.core.splashscreen)
 
 }

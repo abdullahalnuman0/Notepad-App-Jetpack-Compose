@@ -16,11 +16,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.BlurredEdgeTreatment
@@ -43,6 +46,7 @@ import dev.abdullah.noteapp.feature_note.presentation.add_edit_note.components.F
 import dev.abdullah.noteapp.feature_note.presentation.add_edit_note.components.LinedNoteInput
 import dev.abdullah.noteapp.feature_note.presentation.add_edit_note.components.NoteTitleInput
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -68,6 +72,8 @@ fun SharedTransitionScope.AddNoteScreen(
 
     val uiState by vm.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope ()
 
 
     var isNoteGetUsingThatId by remember { mutableStateOf(id == null) }
@@ -98,8 +104,20 @@ fun SharedTransitionScope.AddNoteScreen(
             )
         },
         bottomBar = {
-            BottomToolbar()
+
+            BottomToolbar(
+                onAllButtonCLick = {
+                    scope.launch {
+                        snackbarHostState.showSnackbar(
+                            message = "Working on it",
+                            withDismissAction = true
+                        )
+                    }
+                }
+            )
+
         },
+        snackbarHost = { SnackbarHost(snackbarHostState) },
         modifier = Modifier.navigationBarsPadding()
     ) { paddingValues ->
         Box(
