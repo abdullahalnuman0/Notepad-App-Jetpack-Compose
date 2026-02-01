@@ -4,9 +4,9 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
@@ -19,6 +19,10 @@ import dev.abdullah.noteapp.feature_note.domin.model.Note
 fun NotesGrid(
     notes: List<Note>,
     onNoteClick: (Int) -> Unit,
+    onEdit: (Int) -> Unit,
+    onShare: (Note) -> Unit,
+    onPinOrUnpin: (Note) -> Unit,
+    onDelete: (Note) -> Unit,
     modifier: Modifier = Modifier
 ) {
 
@@ -36,12 +40,17 @@ fun NotesGrid(
                 modifier = Modifier
                     .fillMaxWidth()
 //                    .animateItemPlacement()
-                    .animateContentSize()
+                    .animateContentSize(),
+                onEdit = { onEdit(note.id) },
+                onShare = { onShare(note) },
+                onPinOrUnpin = { onPinOrUnpin(note) },
+                onDelete = { onDelete(note) }
             )
         }
 
         item {
-            Spacer(modifier = Modifier.height(80.dp))
+//            Spacer(modifier = Modifier.height(80.dp))
+            Spacer(modifier = Modifier.fillMaxHeight(0.1f))
         }
     }
 }

@@ -1,14 +1,18 @@
 package dev.abdullah.noteapp.feature_note.presentation.notes
 
 
+import androidx.compose.material3.SnackbarVisuals
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.abdullah.noteapp.feature_note.domin.model.Note
 import dev.abdullah.noteapp.feature_note.domin.use_case.NoteUseCases
+import dev.abdullah.noteapp.feature_note.presentation.components.AppSnackbarVisuals
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -41,7 +45,7 @@ class NotesViewModel @Inject constructor(
             }
         }
 
-        val sortedNotes = when (sort) {
+        /*val sortedNotes = when (sort) {
             SortOption.RECENT ->
                 filteredNotes.sortedByDescending { it.lastUpdated }
 
@@ -53,7 +57,35 @@ class NotesViewModel @Inject constructor(
 
             SortOption.CATEGORY ->
                 filteredNotes.sortedBy { it.category }
+        }*/
+        val sortedNotes = when (sort) {
+
+            SortOption.RECENT,
+            SortOption.UPDATED -> {
+                filteredNotes
+                    .sortedWith(
+                        compareByDescending<Note> { it.isPinned } // pinned first
+                            .thenByDescending { it.lastUpdated }   // then recent
+                    )
+            }
+
+            SortOption.ALPHABETICAL -> {
+                filteredNotes
+                    .sortedWith(
+                        compareByDescending<Note> { it.isPinned }
+                            .thenBy { it.title.lowercase() }
+                    )
+            }
+
+            SortOption.CATEGORY -> {
+                filteredNotes
+                    .sortedWith(
+                        compareByDescending<Note> { it.isPinned }
+                            .thenBy { it.category }
+                    )
+            }
         }
+
 
         NotesUiState(
             notes = sortedNotes,
@@ -66,7 +98,11 @@ class NotesViewModel @Inject constructor(
         initialValue = NotesUiState()
     )
 
+    private val _uiEvent = MutableSharedFlow<UiEvent>()
+    val uiEvent = _uiEvent.asSharedFlow()
+
     private var lastDeleteNote: Note? = null
+    private var lastPinOrUnpinNote: Note? = null
 
 
     fun onEvent(event: NotesEvent) {
@@ -89,8 +125,41 @@ class NotesViewModel @Inject constructor(
                 }
             }
 
+            is NotesEvent.PinOrUnpin -> {
+                viewModelScope.launch {
+
+                    val note = (event.note ?: lastDeleteNote) ?: return@launch
+
+                    val isPinned = note.isPinned
+                    lastPinOrUnpinNote = note.copy(isPinned = !isPinned)
+
+                    val visuals = try {
+
+                        noteUseCases.addNote(lastPinOrUnpinNote ?: return@launch)
+                        AppSnackbarVisuals(
+                            message = if (isPinned) "Unpinned" else "Pinned",
+                            actionLabel = if (isPinned) "Pin" else "Unpin",
+                            type = AppSnackbarVisuals.Type.SUCCESS
+                        )
+
+                    } catch (_: Exception) {
+
+                        AppSnackbarVisuals(
+                            message = "Something want wrong!",
+                            withDismissAction = true,
+                            type = AppSnackbarVisuals.Type.ERROR
+                        )
+
+                    }
+                    _uiEvent.emit(UiEvent.ShowSnackBar(visuals))
+                }
+            }
         }
 
     }
 
+
+    sealed class UiEvent {
+        data class ShowSnackBar(val visuals: SnackbarVisuals) : UiEvent()
+    }
 }

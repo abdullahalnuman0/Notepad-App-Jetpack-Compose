@@ -1,6 +1,7 @@
 package dev.abdullah.noteapp.feature_note.presentation.add_edit_note
 
 // AddNoteScreen.kt
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,7 +16,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.BlurredEdgeTreatment
 import androidx.compose.ui.draw.blur
@@ -33,6 +36,7 @@ import dev.abdullah.noteapp.feature_note.presentation.add_edit_note.components.C
 import dev.abdullah.noteapp.feature_note.presentation.add_edit_note.components.FooterStats
 import dev.abdullah.noteapp.feature_note.presentation.add_edit_note.components.LinedNoteInput
 import dev.abdullah.noteapp.feature_note.presentation.add_edit_note.components.NoteTitleInput
+import kotlinx.coroutines.flow.collectLatest
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -51,11 +55,18 @@ val noteColors = listOf(
 @Composable
 fun AddNoteScreen(
     navController: NavController,
+    id: Int?,
     vm: AddEditNoteViewModel = hiltViewModel()
 ) {
 
+    var isNoteGetUsingThatId by remember { mutableStateOf(id == null) }
+    LaunchedEffect(isNoteGetUsingThatId) {
+        if (id != null && !isNoteGetUsingThatId) vm.onEvent(AddEditEvent.GetOldNote(id))
+    }
+
 
     val uiState by vm.uiState.collectAsStateWithLifecycle()
+
 
     // Update last edited time
     val lastEditedFormatted = remember(uiState.content) {
@@ -64,23 +75,24 @@ fun AddNoteScreen(
     }
 
     LaunchedEffect(Unit) {
-//        vm.uiEvent.collLa
+        vm.uiEvent.collectLatest { event ->
+            when (event) {
+                AddEditNoteViewModel.UiEvent.Back -> navController.popBackStack()
+                is AddEditNoteViewModel.UiEvent.ShowSnackBar -> {}
+            }
+        }
     }
 
     Scaffold(
         topBar = {
             AddEditTopBar(
-                onBackClick = { navController.popBackStack() },
+                onBackClick = { vm.onEvent(AddEditEvent.SaveNote) },
                 onShare = { },
                 onSave = { vm.onEvent(AddEditEvent.SaveNote) }
             )
         },
         bottomBar = {
-            BottomToolbar(
-                onColorSelect = { color ->
-//                    noteState = noteState.copy(colorTag = color)
-                },
-            )
+            BottomToolbar()
         },
         modifier = Modifier.navigationBarsPadding()
     ) { paddingValues ->
@@ -152,6 +164,10 @@ fun AddNoteScreen(
                 onCategorySelected = { vm.onEvent(AddEditEvent.EnteredCategory(it)) }
             )
         }
+    }
+
+    BackHandler {
+        vm.onEvent(AddEditEvent.SaveNote)
     }
 }
 

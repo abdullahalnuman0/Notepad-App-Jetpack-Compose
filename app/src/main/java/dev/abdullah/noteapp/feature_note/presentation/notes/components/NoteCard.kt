@@ -1,5 +1,6 @@
 package dev.abdullah.noteapp.feature_note.presentation.notes.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -10,9 +11,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.PushPin
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -41,6 +44,10 @@ import dev.abdullah.noteapp.feature_note.domin.util.getCategoryTextColor
 fun NoteCard(
     note: Note,
     onClick: () -> Unit,
+    onEdit: () -> Unit,
+    onShare: () -> Unit,
+    onPinOrUnpin: () -> Unit,
+    onDelete: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     var isMenuExpanded by remember { mutableStateOf(false) }
@@ -76,6 +83,24 @@ fun NoteCard(
                     CategoryChip(category = category, color = category.getCategoryTextColor())
                 }
 
+                // 📌 PIN ICON
+                if (note.isPinned) {
+                    Icon(
+                        imageVector = Icons.Default.PushPin,
+                        contentDescription = "Pinned",
+                        modifier = Modifier
+//                            .align(Alignment.TopEnd)
+//                            .padding(8.dp)
+                            .size(16.dp)
+                            .background(
+                                MaterialTheme.colorScheme.surface,
+                                CircleShape
+                            )
+                            .padding(4.dp),
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                }
+
                 Box {
                     IconButton(
                         onClick = { isMenuExpanded = true },
@@ -89,12 +114,13 @@ fun NoteCard(
                     }
 
                     NoteMenu(
+                        isPinned = note.isPinned,
                         expanded = isMenuExpanded,
                         onDismiss = { isMenuExpanded = false },
-                        onEdit = { /* Implement edit */ },
-                        onDelete = { /* Implement delete */ },
-                        onShare = { /* Implement share */ },
-                        onPin = { /* Implement pin */ }
+                        onEdit = onEdit,
+                        onDelete = onDelete,
+                        onShare = onShare,
+                        onPinOrUnpin = onPinOrUnpin
                     )
                 }
             }
@@ -108,7 +134,7 @@ fun NoteCard(
                     fontFamily = FontFamily.Serif,
                     fontWeight = FontWeight.Medium
                 ),
-                maxLines = 3,
+                maxLines = 5,
                 overflow = TextOverflow.Ellipsis,
                 color = MaterialTheme.colorScheme.onSurface
             )

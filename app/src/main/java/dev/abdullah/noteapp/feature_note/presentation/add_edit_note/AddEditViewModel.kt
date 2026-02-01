@@ -57,21 +57,55 @@ class AddEditNoteViewModel @Inject constructor(
                 _uiState.update {
                     it.copy(showCategoryDialog = !it.showCategoryDialog)
                 }
+
+            is AddEditEvent.GetOldNote -> getOldNote(event.id)
+        }
+    }
+
+    private fun getOldNote(id: Int) {
+        viewModelScope.launch {
+            println("Call db - $id")
+            noteUseCases.getNote(id)?.let { note ->
+                println("Found data")
+                _uiState.update {
+                    it.copy(
+                        oldNote = note,
+                        category = note.category,
+                        title = note.title,
+                        content = note.category,
+                        lastUpdateDate = Date(note.lastUpdated)
+                    )
+                }
+            }
+            println("Done db")
         }
     }
 
 
     private fun saveNote() {
+
         viewModelScope.launch {
+
             val s = _uiState.value
-            val note = Note(
+            if (s.title.isEmpty() && s.content.isEmpty() && s.category == null) {
+                _uiEvent.emit(UiEvent.Back)
+                return@launch
+            }
+
+            val note = s.oldNote?.copy(
+                title = s.title,
+                content = s.content,
+                category = s.category ?: "Other",
+                lastUpdated = s.lastUpdateDate.time
+            ) ?: Note(
                 title = s.title,
                 content = s.content,
                 category = s.category ?: "Other",
                 lastUpdated = s.lastUpdateDate.time
             )
-            val addNote = noteUseCases.addNote(note)
-            println(addNote)
+
+            _uiEvent.emit(UiEvent.Back)
+            noteUseCases.addNote(note)
         }
     }
 

@@ -36,14 +36,16 @@ class MainActivity : ComponentActivity() {
                     ) {
 
                         composable<NavNoteView> {
-                            NotesScreen(navController) {}
+                            NotesScreen(navController)
                         }
 
                         composable<NavAddEditNote> {
+
                             val id = it.toRoute<NavAddEditNote>().id
-                            println("-------------\nNote id $id\n-------------")
+
                             AddNoteScreen(
-                                navController = navController
+                                navController = navController,
+                                id = id
                             )
 
                         }

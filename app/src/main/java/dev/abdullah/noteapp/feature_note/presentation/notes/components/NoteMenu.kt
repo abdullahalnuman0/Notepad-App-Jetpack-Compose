@@ -8,12 +8,13 @@ import androidx.compose.runtime.Composable
 
 @Composable
 fun NoteMenu(
+    isPinned: Boolean,
     expanded: Boolean,
     onDismiss: () -> Unit,
     onEdit: () -> Unit,
     onDelete: () -> Unit,
     onShare: () -> Unit,
-    onPin: () -> Unit
+    onPinOrUnpin: () -> Unit
 ) {
     DropdownMenu(
         expanded = expanded,
@@ -34,9 +35,9 @@ fun NoteMenu(
             }
         )
         DropdownMenuItem(
-            text = { Text("Pin to top") },
+            text = { Text(if (isPinned) "Unpin" else "Pin") },
             onClick = {
-                onPin()
+                onPinOrUnpin()
                 onDismiss()
             }
         )
