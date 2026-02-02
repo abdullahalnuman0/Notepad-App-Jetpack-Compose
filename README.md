@@ -4,12 +4,12 @@
 
 ### A Modern Note-Taking Application Built with Jetpack Compose
 
-[![Kotlin](https://img.shields.io/badge/Kotlin-1.9.0-purple.svg?style=flat&logo=kotlin)](https://kotlinlang.org)
+[![Kotlin](https://img.shields.io/badge/Kotlin-2.0.0-purple.svg?style=flat&logo=kotlin)](https://kotlinlang.org)
 [![Jetpack Compose](https://img.shields.io/badge/Jetpack%20Compose-1.5.0-green.svg?style=flat&logo=jetpackcompose)](https://developer.android.com/jetpack/compose)
 [![Android](https://img.shields.io/badge/Platform-Android-brightgreen.svg?style=flat&logo=android)](https://www.android.com)
 [![API](https://img.shields.io/badge/API-24%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=24)
 
-[Download APK](/screenshots/NoteFlow.apk) • [Report Bug](https://github.com/abdullahalnuman0/Notepad-App-Jetpack-Compose/issues) • [Request Feature](https://github.com/abdullahalnuman0/Notepad-App-Jetpack-Compose/issues)
+[Download APK](/screenshots/apk) • [Report Bug](https://github.com/abdullahalnuman0/Notepad-App-Jetpack-Compose/issues) • [Request Feature](https://github.com/abdullahalnuman0/Notepad-App-Jetpack-Compose/issues)
 
 </div>
 
@@ -34,19 +34,19 @@ Notepad App is a clean, minimal, and modern Android application designed to help
 ### 🌞 Light Mode
 
 <div align="center">
-  <img src="/screenshots/light_mode_1.jpeg" width="250" alt="Light Mode" />
-  <img src="/screenshots/light_mode_2.jpeg" width="250" alt="Light Mode" />
-  <img src="/screenshots/light_mode_3.jpeg" width="250" alt="Light Mode" />
-  <img src="/screenshots/light_mode_4.jpeg" width="250" alt="Light Mode" />
+  <img src="/screenshots/light_mode_1.jpeg" width="180" alt="Light Mode" />
+  <img src="/screenshots/light_mode_2.jpeg" width="180" alt="Light Mode" />
+  <img src="/screenshots/light_mode_3.jpeg" width="180" alt="Light Mode" />
+  <img src="/screenshots/light_mode_4.jpeg" width="180" alt="Light Mode" />
 </div>
 
 ### 🌙 Dark Mode
 
 <div align="center">
-  <img src="/screenshots/dark_mode_1.jpeg" width="250" alt="Dark Mode" />
-  <img src="/screenshots/dark_mode_2.jpeg" width="250" alt="Dark Mode" />
-  <img src="/screenshots/dark_mode_3.jpeg" width="250" alt="Dark Mode" />
-  <img src="/screenshots/dark_mode_4.jpeg" width="250" alt="Dark Mode" />
+  <img src="/screenshots/dark_mode_1.jpeg" width="180" alt="Dark Mode" />
+  <img src="/screenshots/dark_mode_2.jpeg" width="180" alt="Dark Mode" />
+  <img src="/screenshots/dark_mode_3.jpeg" width="180" alt="Dark Mode" />
+  <img src="/screenshots/dark_mode_4.jpeg" width="180" alt="Dark Mode" />
 </div>
 
 ---
@@ -165,10 +165,10 @@ app/
 
 ### Prerequisites
 
-- Android Studio Hedgehog | 2023.1.1 or higher
-- Minimum SDK: API 24 (Android 7.0)
-- Target SDK: API 34 (Android 14)
-- JDK 17 or higher
+- Android Studio Hedgehog | 2025.2.3 or higher
+- Minimum SDK: API 26 (Android 8.0)
+- Target SDK: API 36 (Android 16)
+- JDK 11 or higher
 
 ### Installation
 
