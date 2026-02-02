@@ -1,3 +1,5 @@
+import org.gradle.kotlin.dsl.support.kotlinCompilerOptions
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -14,12 +16,12 @@ plugins {
 
 android {
     namespace = "dev.abdullah.noteapp"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "dev.abdullah.noteapp"
         minSdk = 26
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
 
@@ -90,6 +92,8 @@ dependencies {
     // System UI Controller for status bar [এটা Jetpack Compose এ ডিভাইসের Status Bar, Navigation Bar, এবং অন্যান্য system UI elements কে কাস্টমাইজ করার জন্য ব্যবহৃত হয়।]
 //    implementation("com.google.accompanist:accompanist-systemuicontroller:0.36.0")
 
+    // Shared Transition
+//    implementation(libs.androidx.compose.animation)
 
     // Splash screen
     implementation(libs.androidx.core.splashscreen)
