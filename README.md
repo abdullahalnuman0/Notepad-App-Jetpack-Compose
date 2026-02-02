@@ -7,7 +7,7 @@
 [![Kotlin](https://img.shields.io/badge/Kotlin-2.0.0-purple.svg?style=flat&logo=kotlin)](https://kotlinlang.org)
 [![Jetpack Compose](https://img.shields.io/badge/Jetpack%20Compose-1.5.0-green.svg?style=flat&logo=jetpackcompose)](https://developer.android.com/jetpack/compose)
 [![Android](https://img.shields.io/badge/Platform-Android-brightgreen.svg?style=flat&logo=android)](https://www.android.com)
-[![API](https://img.shields.io/badge/API-24%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=24)
+[![API](https://img.shields.io/badge/API-26%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=26)
 
 [Download APK](/screenshots/apk) • [Report Bug](https://github.com/abdullahalnuman0/Notepad-App-Jetpack-Compose/issues) • [Request Feature](https://github.com/abdullahalnuman0/Notepad-App-Jetpack-Compose/issues)
 
